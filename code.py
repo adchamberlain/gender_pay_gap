@@ -142,23 +142,28 @@ print(f"P-value: {logbase_pay_pvalue}")
 # Create a summary table of regression results
 models = [model1, model2, model3]
 model_names = ['Model 1', 'Model 2', 'Model 3']
-info_dict = {
-    'Controls:': ['', '', ''],
-    'Education': ['No', 'Yes', 'Yes'],
-    'Department': ['No', 'No', 'Yes'],
-    'Job Title': ['No', 'No', 'Yes'],
-}
 
+# Create basic summary table without the problematic info_dict parameter
 results_table = summary_col(models, 
                           float_format='%0.4f',
                           stars=True, 
                           model_names=model_names,
-                          info_dict=info_dict,
                           regressor_order=['Intercept', 'male', 'perfEval', 'seniority'])
+
+# Add the additional information manually as HTML
+control_info = """
+<tr><td>Controls:</td><td></td><td></td><td></td></tr>
+<tr><td>Education</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+<tr><td>Department</td><td>No</td><td>No</td><td>Yes</td></tr>
+<tr><td>Job Title</td><td>No</td><td>No</td><td>Yes</td></tr>
+"""
+
+html_content = results_table.as_html()
+html_content = html_content.replace("</table>", control_info + "</table>")
 
 # Save the regression table to HTML
 with open('results.html', 'w') as f:
-    f.write(results_table.as_html())
+    f.write(html_content)
 
 
 #############################
